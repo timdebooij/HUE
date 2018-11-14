@@ -1,7 +1,7 @@
 package com.timdebooij.hueapplicatie.models;
 
 public class LightBulb {
-    private String id;
+    public String id;
     private String name;
     private boolean on;
     private int hue;
@@ -15,5 +15,10 @@ public class LightBulb {
         this.hue = hue;
         this.sat = sat;
         this.bri = bri;
+    }
+
+    @Override
+    public String toString() {
+        return "##name: " + name + " ##id: " + id + " ##on: " + on + " ##hue: " + hue + " ##sat: " + sat + " ##bri: " + bri;
     }
 }

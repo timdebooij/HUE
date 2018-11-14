@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.timdebooij.hueapplicatie.models.Bridge;
+import com.timdebooij.hueapplicatie.models.LightBulb;
 import com.timdebooij.hueapplicatie.services.ApiListener;
 import com.timdebooij.hueapplicatie.services.VolleyService;
 
@@ -23,8 +24,17 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
         service = new VolleyService(this.getApplicationContext(), this);
         service.queue.start();
     }
+
     public void connect(View view) throws JSONException {
         service.logIn(bridge);
+    }
+
+    public void getLights(View view){
+        service.getLightsInBridge(bridge);
+    }
+
+    public void setLight(View view) throws JSONException {
+        service.setLight(bridge, bridge.lightBulbs.get(0).id);
     }
 
     @Override
@@ -40,5 +50,13 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
     @Override
     public void onError(String error) {
         Log.i("info", error);
+    }
+
+    @Override
+    public void onLightBulbs(Bridge bridgeWithLightbulbs) {
+
+        for(LightBulb bulb : bridgeWithLightbulbs.lightBulbs){
+            Log.i("info", bulb.toString());
+        }
     }
 }

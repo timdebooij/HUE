@@ -13,12 +13,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.timdebooij.hueapplicatie.models.Bridge;
+import com.timdebooij.hueapplicatie.models.LightBulb;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class VolleyService {
     public RequestQueue queue;
@@ -35,7 +40,7 @@ public class VolleyService {
         String url = "http://" + bridge.ipAddress + ":" + bridge.port + "/api/";
         final Bridge usedBridge = bridge;
         JSONObject json = new JSONObject();
-        json.put("on", true);
+        json.put("devicetype", "HUE app");
 
         CustomJsonArrayRequest request = new CustomJsonArrayRequest(Request.Method.POST, url, json, new Response.Listener<JSONArray>() {
             @Override
@@ -64,5 +69,77 @@ public class VolleyService {
 
         queue.add(request);
 
+    }
+
+    public void getLightsInBridge(Bridge bridge){
+        String url = "http://" + bridge.ipAddress + ":" + bridge.port + "/api/" + bridge.token;
+        final Bridge usedBridge = bridge;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject lights = response.getJSONObject("lights");
+                    Log.i("info", lights.toString());
+                    List<String> lightKeys = new ArrayList<>();
+                    Iterator<String> keys = lights.keys();
+                    while(keys.hasNext()) {
+                        String key = keys.next();
+                        lightKeys.add(key);
+                    }
+                    for(String s : lightKeys){
+                        JSONObject bulb = lights.getJSONObject(s);
+                        String id = s;
+                        String name = bulb.getString("name");
+                        JSONObject state = bulb.getJSONObject("state");
+                        boolean on = state.getBoolean("on");
+                        int hue = state.getInt("hue");
+                        int sat = state.getInt("sat");
+                        int bri = state.getInt("bri");
+                        usedBridge.lightBulbs.add(new LightBulb(id, name, on, hue, sat, bri));
+                    }
+                    listener.onLightBulbs(usedBridge);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+
+        queue.add(request);
+    }
+
+    public void setLight(Bridge bridge, String lightId) throws JSONException {
+        String url = "http://" + bridge.ipAddress + ":" + bridge.port + "/api/" + bridge.token + "/lights/" + lightId + "/state";
+
+        JSONObject order = new JSONObject();
+        order.put("on", true);
+        order.put("hue", 1);
+        order.put("sat", 254);
+        order.put("bri", 254);
+        CustomJsonArrayRequest request = new CustomJsonArrayRequest(Request.Method.PUT, url, order, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    JSONObject first = response.getJSONObject(0);
+                    JSONObject success = first.getJSONObject("success");
+                    Log.i("info", success.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(request);
     }
 }

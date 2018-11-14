@@ -42,9 +42,15 @@ public class VolleyService {
             public void onResponse(JSONArray response) {
                 try {
                     JSONObject jsonObject = response.getJSONObject(0);
-                    JSONObject success = jsonObject.getJSONObject("success");
-                    usedBridge.name = success.getString("username");
-                    listener.usernameReceived(usedBridge);
+                    if(jsonObject.has("success")) {
+                        JSONObject success = jsonObject.getJSONObject("success");
+                        String token = success.getString("username");
+                        usedBridge.token = token;
+                        listener.usernameReceived(usedBridge);
+                    }
+                    else{
+                        listener.onError("No connection possible with bridge, be sure to press the button");
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -52,7 +58,7 @@ public class VolleyService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.i("info", error.toString());
             }
         });
 

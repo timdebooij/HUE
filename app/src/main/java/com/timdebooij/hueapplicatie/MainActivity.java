@@ -24,9 +24,7 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
         service.queue.start();
     }
     public void connect(View view) throws JSONException {
-        Log.i("info", "tries to connect");
         service.logIn(bridge);
-        Log.i("info", "is connecting");
     }
 
     @Override
@@ -36,6 +34,11 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
 
     @Override
     public void usernameReceived(Bridge bridgeWithToken) {
-        Log.i("info", "username is: " + bridgeWithToken.token);
+        Log.i("info", "Token is: " + bridgeWithToken.token);
+    }
+
+    @Override
+    public void onError(String error) {
+        Log.i("info", error);
     }
 }

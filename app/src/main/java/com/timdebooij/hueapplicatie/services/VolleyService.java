@@ -73,6 +73,7 @@ public class VolleyService {
 
     public void getLightsInBridge(Bridge bridge){
         String url = "http://" + bridge.ipAddress + ":" + bridge.port + "/api/" + bridge.token;
+        Log.i("info", url);
         final Bridge usedBridge = bridge;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -114,12 +115,12 @@ public class VolleyService {
         queue.add(request);
     }
 
-    public void setLight(Bridge bridge, String lightId) throws JSONException {
+    public void setLight(Bridge bridge, String lightId, int hueValue) throws JSONException {
         String url = "http://" + bridge.ipAddress + ":" + bridge.port + "/api/" + bridge.token + "/lights/" + lightId + "/state";
 
         JSONObject order = new JSONObject();
         order.put("on", true);
-        order.put("hue", 1);
+        order.put("hue", hueValue);
         order.put("sat", 254);
         order.put("bri", 254);
         CustomJsonArrayRequest request = new CustomJsonArrayRequest(Request.Method.PUT, url, order, new Response.Listener<JSONArray>() {

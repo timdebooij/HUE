@@ -12,6 +12,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.timdebooij.hueapplicatie.MainActivity;
 import com.timdebooij.hueapplicatie.models.Bridge;
 import com.timdebooij.hueapplicatie.models.LightBulb;
 
@@ -124,6 +125,33 @@ public class VolleyService {
         order.put("sat", 254);
         order.put("bri", 254);
         CustomJsonArrayRequest request = new CustomJsonArrayRequest(Request.Method.PUT, url, order, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    JSONObject first = response.getJSONObject(0);
+                    JSONObject success = first.getJSONObject("success");
+                    Log.i("info", success.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(request);
+    }
+
+    public void switchLightOnOff(Bridge bridge, String lightID, boolean switchstate) throws JSONException {
+        String url = "http://" + bridge.ipAddress + ":" + bridge.port + "/api/" + bridge.token + "/lights/" + lightID + "/state/";
+        JSONObject object = new JSONObject();
+
+        object.put("on",switchstate);
+
+        CustomJsonArrayRequest request = new CustomJsonArrayRequest(Request.Method.PUT, url, object, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.Switch;
 
 import com.timdebooij.hueapplicatie.models.Bridge;
 import com.timdebooij.hueapplicatie.models.LightBulb;
@@ -20,12 +21,13 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
     public Bridge bridge;
     public VolleyService service;
     public ArrayList<Bridge> bridges;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bridges = new ArrayList<>();
-        bridges.add(new Bridge("145.49.4.15", "emulator", "80"));
+        bridges.add(new Bridge("145.49.2.246", "emulator", "80"));
         bridges.add(new Bridge("145.48.205.33", "LA AULA", "80"));
         bridges.add(new Bridge("192.168.1.179", "MAD LA-134", "80"));
         service = new VolleyService(this.getApplicationContext(), this);
@@ -54,10 +56,22 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
 
     public void setLight(View view) throws JSONException {
         SeekBar seekbar = findViewById(R.id.seekBarHue);
-        for(LightBulb bulb : bridges.get(1).lightBulbs) {
-            service.setLight(bridges.get(1), bulb.id, seekbar.getProgress());
+        for(LightBulb bulb : bridges.get(0).lightBulbs) {
+            service.setLight(bridges.get(0), bulb.id, seekbar.getProgress());
         }
-        Log.i("info", "amount of bulbs in " + bridges.get(1).name + ": " + bridges.get(1).lightBulbs.size());
+        Log.i("info", "amount of bulbs in " + bridges.get(1).name + ": " + bridges.get(0).lightBulbs.size());
+    }
+
+    public void setLightbulbOnOff(View view) throws JSONException {
+        Switch lightSwitch = (Switch) findViewById(R.id.LightSwitch);
+        boolean switchState = lightSwitch.isChecked();
+
+        if (switchState){
+            service.switchLightOnOff(bridges.get(0),"1",true);
+        } else if (switchState == false){
+            service.switchLightOnOff(bridges.get(0),"1",false);
+        }
+
     }
 
     @Override

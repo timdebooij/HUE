@@ -29,7 +29,7 @@ import java.util.List;
 public class VolleyService {
     public RequestQueue queue;
     public ApiListener listener;
-    JSONParser parser;
+    private JSONParser parser;
 
     public VolleyService(Context context, ApiListener listener){
         this.queue = Volley.newRequestQueue(context);
@@ -76,6 +76,7 @@ public class VolleyService {
         String url = "http://" + bridge.ipAddress + ":" + bridge.port + "/api/" + bridge.token;
         Log.i("info", url);
         final Bridge usedBridge = bridge;
+        usedBridge.lightBulbs = new ArrayList<>();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -97,6 +98,7 @@ public class VolleyService {
                         int hue = state.getInt("hue");
                         int sat = state.getInt("sat");
                         int bri = state.getInt("bri");
+                        Log.i("info", "bulbs in detail: " + usedBridge.lightBulbs.size());
                         usedBridge.lightBulbs.add(new LightBulb(id, name, on, hue, sat, bri));
                     }
                     listener.onLightBulbs(usedBridge);

@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BridgeDetailActivity"></activity>
+        <activity android:name=".BridgeDetailActivity" />
+        <activity android:name=".LightbulbDetailActivity"></activity>
     </application>
 
 </manifest>

@@ -77,12 +77,6 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
         service.logIn(bridges.get(0));
     }
 
-    public void setLight(View view) throws JSONException {
-        service.setLight(bridges.get(0), bridges.get(0).lightBulbs.get(0).id, seekbar.getProgress());
-
-        Log.i("info", "amount of bulbs in " + bridges.get(1).name + ": " + bridges.get(1).lightBulbs.size());
-    }
-
     @Override
     public void onResponse(String response) {
 

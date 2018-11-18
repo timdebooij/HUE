@@ -118,14 +118,13 @@ public class VolleyService {
         queue.add(request);
     }
 
-    public void setLight(Bridge bridge, String lightId, int hueValue) throws JSONException {
+    public void setLight(Bridge bridge, String lightId, int hueValue, int satValue, int briValue) throws JSONException {
         String url = "http://" + bridge.ipAddress + ":" + bridge.port + "/api/" + bridge.token + "/lights/" + lightId + "/state";
 
         JSONObject order = new JSONObject();
-        order.put("on", true);
         order.put("hue", hueValue);
-        order.put("sat", 254);
-        order.put("bri", 254);
+        order.put("sat", satValue);
+        order.put("bri", briValue);
         CustomJsonArrayRequest request = new CustomJsonArrayRequest(Request.Method.PUT, url, order, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {

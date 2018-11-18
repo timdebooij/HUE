@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".BridgeDetailActivity">
 
     <Switch
@@ -13,9 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="156dp"
         android:onClick="setLightbulbOnOff"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.532"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,31 +35,24 @@
 
     <Button
         android:id="@+id/bridgeConnectDetailButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="52dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:onClick="connect"
-        android:text="Connect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.681"
-        app:layout_constraintStart_toEndOf="@+id/bridgeConnected"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.239" />
+        android:text="connect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bridgeIP" />
 
     <Button
         android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="144dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="140dp"
         android:onClick="setLight"
         android:text="Setfirstlight"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bridgeConnectDetailButton" />
+        app:layout_constraintTop_toTopOf="@+id/bridgeConnectDetailButton" />
 
     <TextView
         android:id="@+id/bridgeName"
@@ -69,6 +61,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="Name"
+        android:textColor="@color/colorText"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -79,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="IP"
+        android:textColor="@color/colorText"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bridgeName" />
@@ -92,4 +86,17 @@
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/bridgeName"
         app:layout_constraintTop_toTopOf="@+id/bridgeName" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewBulbs"
+        android:layout_width="368dp"
+        android:layout_height="253dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LightSwitch" />
 </android.support.constraint.ConstraintLayout>

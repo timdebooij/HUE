@@ -5,11 +5,11 @@ import android.os.Parcelable;
 
 public class LightBulb implements Parcelable {
     public String id;
-    private String name;
-    private boolean on;
+    public String name;
+    public boolean on;
     public int hue;
-    private int sat;
-    private int bri;
+    public int sat;
+    public int bri;
 
     public LightBulb(String id, String name, boolean on, int hue, int sat, int bri) {
         this.id = id;
@@ -32,6 +32,7 @@ public class LightBulb implements Parcelable {
     public static final Creator<LightBulb> CREATOR = new Creator<LightBulb>() {
         @Override
         public LightBulb createFromParcel(Parcel in) {
+
             return new LightBulb(in);
         }
 

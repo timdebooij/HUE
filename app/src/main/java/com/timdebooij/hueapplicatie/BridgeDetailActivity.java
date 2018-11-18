@@ -5,12 +5,17 @@ import android.graphics.Color;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.timdebooij.hueapplicatie.adapter.RecyclerViewAdapter;
+import com.timdebooij.hueapplicatie.adapter.RecyclerViewAdapterBulbs;
 import com.timdebooij.hueapplicatie.models.Bridge;
 import com.timdebooij.hueapplicatie.models.LightBulb;
 import com.timdebooij.hueapplicatie.services.ApiListener;
@@ -18,12 +23,17 @@ import com.timdebooij.hueapplicatie.services.VolleyService;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 public class BridgeDetailActivity extends AppCompatActivity implements ApiListener {
     public Bridge bridge;
     public VolleyService service;
     public SeekBar seekBar;
     public TextView connected;
     public int bridgeNumber;
+    public RecyclerView recyclerView;
+    public RecyclerViewAdapterBulbs adapter;
+    public ArrayList<LightBulb> lightBulbs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +42,21 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         Intent intent = getIntent();
         bridge = intent.getParcelableExtra("bridge");
         bridgeNumber = intent.getIntExtra("number", 0);
+        lightBulbs = bridge.lightBulbs;
+
         seekBar = findViewById(R.id.seekBarHue);
         service = new VolleyService(this.getApplicationContext(), this);
         getBridgeInfo();
+        setUpRecyclerView();
+    }
+
+    public void setUpRecyclerView(){
+        recyclerView = findViewById(R.id.recyclerViewBulbs);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new RecyclerViewAdapterBulbs(this, bridge.lightBulbs, bridge);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     public void getBridgeInfo(){
@@ -57,11 +79,6 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         service.logIn(bridge);
     }
 
-    public void setLight(View view) throws JSONException {
-        service.setLight(bridge, bridge.lightBulbs.get(0).id, seekBar.getProgress());
-
-        Log.i("info", "amount of bulbs in " + bridge.name + ": " + bridge.lightBulbs.size());
-    }
 
     public void setLightbulbOnOff(View view) throws JSONException {
         Switch lightSwitch = (Switch) findViewById(R.id.LightSwitch);
@@ -102,6 +119,9 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         if(bridge.lightBulbs.size() > 0){
             seekBar.setProgress(bridge.lightBulbs.get(0).hue);
         }
+        lightBulbs.clear();
+        lightBulbs.addAll(bridge.lightBulbs);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

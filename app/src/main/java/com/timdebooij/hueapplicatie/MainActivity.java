@@ -1,5 +1,6 @@
 package com.timdebooij.hueapplicatie;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +19,21 @@ import com.timdebooij.hueapplicatie.services.VolleyService;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Map;
 
+
+/*
+To do(for nearly a 10):
+        -Save colorschemes in a room database
+        -Possibility to add a new colorscheme
+        -Create nice image to show the color for each lightbulb in the list
+        -Fragments for each activity
+        -Create nice look for bridgeView
+        -Create nice look for bulbView
+        -Multi-language support
+        -Make icon for app
+        -Use animations
+ */
 public class MainActivity extends AppCompatActivity implements ApiListener {
 
     public VolleyService service;
@@ -33,13 +48,11 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bridges = new ArrayList<>();
-        seekbar = findViewById(R.id.seekBarHue);
 
         service = new VolleyService(this.getApplicationContext(), this);
         setUpBridges();
         setUpRecyclerView();
         service.queue.start();
-
     }
 
     public void setUpRecyclerView(){
@@ -52,23 +65,30 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
     }
 
     public void setUpBridges(){
-        try {
-            bridges.add(new Bridge("192.168.2.17", "emulator", "80"));
+
+            bridges.add(new Bridge("192.168.178.18", "emulator", "80"));
             bridges.add(new Bridge("145.48.205.33", "LA AULA", "80"));
             bridges.add(new Bridge("192.168.1.179", "MAD LA-134", "80"));
-            service.logIn(bridges.get(0));
+            getPreferences();
             bridges.get(1).token = "iYrmsQq1wu5FxF9CPqpJCnm1GpPVylKBWDUsNDhB";
             logIn();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+    }
+
+    public void getPreferences(){
+        SharedPreferences preferences = getSharedPreferences("BridgeTokens", MODE_PRIVATE);
+        Map<String, ?> keyValues = preferences.getAll();
+        for(Bridge bridge : bridges){
+            if(keyValues.containsKey(bridge.name)){
+                bridge.token = preferences.getString(bridge.name, "");
+                Log.i("infoPref", "token via preferences: " + bridge.token);
+            }
         }
     }
 
     public void logIn(){
         for(Bridge bridge : bridges){
-            Log.i("info", "token: " + bridge.token);
-            if(bridge.token != null){
+            if(bridge.token != null && bridge.token != ""){
                 service.getLightsInBridge(bridge);
             }
         }

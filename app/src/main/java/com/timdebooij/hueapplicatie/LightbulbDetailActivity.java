@@ -31,6 +31,10 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
     public TextView sat;
     public Switch lightSwitch;
     public ColorPickerView colorPickerView;
+    public float huee;
+    public float satt;
+    public float brii;
+    float[] hsv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +52,14 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
             @Override
             public void onColorSelected(ColorEnvelope colorEnvelope) {
                 int[] rgb = colorEnvelope.getColorRGB();
-                float[] hsv = new float[3];
+                hsv = new float[3];
                 Color.RGBToHSV(rgb[0], rgb[1], rgb[2], hsv);
-                int hue = ((int)(hsv[0]/360*65535));
-                int sat = ((int)(hsv[1]*254));
-                int bri = ((int)(hsv[2]*254));
+                huee = ((int)(hsv[0]/360*65535));
+                satt = ((int)(hsv[1]*254));
+                brii = ((int)(hsv[2]*254));
                 try {
-                    service.setLight(bridge, bulb.id, hue, sat, bri);
-                    setInfoText(hue, sat, bri);
+                    service.setLight(bridge, bulb.id, (int)huee, (int)satt, (int)brii);
+                    setInfoText((int)huee, (int)satt, (int)brii);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -66,8 +70,12 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
 
     public void setInfoText(int hue, int sat, int bri){
         this.hue.setText("HUE: " + hue);
+        this.hue.setTextColor(Color.HSVToColor(hsv));
         this.sat.setText("SAT: " + sat);
+        this.sat.setTextColor(Color.HSVToColor(hsv));
         this.bri.setText("BRI: " + bri);
+        this.bri.setTextColor(Color.HSVToColor(hsv));
+        this.name.setTextColor(Color.HSVToColor(hsv));
     }
 
     public void initializeBulb(){

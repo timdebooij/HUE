@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,9 @@ public class RecyclerViewAdapterBulbs extends RecyclerView.Adapter<RecyclerViewA
                 public void onClick(View view) {
                     Intent intent = new Intent(view.getContext(), LightbulbDetailActivity.class);
                     intent.putExtra("bulb", bulb);
+                    Log.i("infocom", "bulb is: " + bulb.on);
+                    Log.i("infocom", "bulb hue: " + bulb.hue);
+                    Log.i("infocom", "bulb number: " + i);
                     intent.putExtra("number", i);
                     intent.putExtra("bridge", bridge);
                     view.getContext().startActivity(intent);

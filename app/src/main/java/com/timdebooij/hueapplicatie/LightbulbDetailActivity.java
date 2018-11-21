@@ -10,9 +10,10 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.skydoves.colorpickerpreference.ColorEnvelope;
-import com.skydoves.colorpickerpreference.ColorListener;
-import com.skydoves.colorpickerpreference.ColorPickerView;
+import com.skydoves.colorpickerview.ColorEnvelope;
+import com.skydoves.colorpickerview.ColorPickerView;
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
+import com.skydoves.colorpickerview.listeners.ColorListener;
 import com.timdebooij.hueapplicatie.models.Bridge;
 import com.timdebooij.hueapplicatie.models.LightBulb;
 import com.timdebooij.hueapplicatie.services.ApiListener;
@@ -20,7 +21,10 @@ import com.timdebooij.hueapplicatie.services.VolleyService;
 
 import org.json.JSONException;
 
-public class LightbulbDetailActivity extends AppCompatActivity implements ApiListener {
+
+import top.defaults.colorpicker.ColorObserver;
+
+public class LightbulbDetailActivity extends AppCompatActivity implements ApiListener, ColorObserver {
     public VolleyService service;
     public LightBulb bulb;
     public Bridge bridge;
@@ -31,10 +35,12 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
     public TextView sat;
     public Switch lightSwitch;
     public ColorPickerView colorPickerView;
+    public top.defaults.colorpicker.ColorPickerView colorPicker;
     public float huee;
     public float satt;
     public float brii;
     float[] hsv;
+    public int number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,30 +49,23 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
         service = new VolleyService(this.getApplicationContext(), this);
 
         Intent intent = getIntent();
+        number = intent.getIntExtra("number", 0);
         bulb = intent.getParcelableExtra("bulb");
-        Log.i("infobulb", bulb.name);
+        Log.i("infocolor", "hue: " + bulb.hue);
         initializeBulb();
         bridge = intent.getParcelableExtra("bridge");
-        colorPickerView = findViewById(R.id.colorPickerView);
-        colorPickerView.setColorListener(new ColorListener() {
-            @Override
-            public void onColorSelected(ColorEnvelope colorEnvelope) {
-                int[] rgb = colorEnvelope.getColorRGB();
-                hsv = new float[3];
-                Color.RGBToHSV(rgb[0], rgb[1], rgb[2], hsv);
-                huee = ((int)(hsv[0]/360*65535));
-                satt = ((int)(hsv[1]*254));
-                brii = ((int)(hsv[2]*254));
-                try {
-                    service.setLight(bridge, bulb.id, (int)huee, (int)satt, (int)brii);
-                    setInfoText((int)huee, (int)satt, (int)brii);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        colorPicker = findViewById(R.id.colorPickerArsenal);
 
+        float hue = (float)bulb.hue/65535*360;
+        float sat = (float)bulb.sat/254;
+        float bri = (float)bulb.bri/254;
+        float[] hsb = {hue, sat, bri};
+        int color = Color.HSVToColor(hsb);
+        colorPicker.setInitialColor(color);
+        colorPicker.subscribe(this);
     }
+
+
 
     public void setInfoText(int hue, int sat, int bri){
         this.hue.setText("HUE: " + hue);
@@ -105,11 +104,21 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
         if (switchState){
             service.switchLightOnOff(bridge,bulb.id,true);
             on.setText("ON");
+            bulb.on = true;
         } else if (switchState == false){
             service.switchLightOnOff(bridge,bulb.id,false);
             on.setText("OFF");
+            bulb.on = false;
         }
+    }
 
+    public com.timdebooij.hueapplicatie.models.Color hex2Rgb(int colorStr) {
+        String hexColor = String.format("#%06X", (0xFFFFFF & colorStr));
+
+        return new com.timdebooij.hueapplicatie.models.Color(
+                Integer.valueOf( hexColor.substring( 1, 3 ), 16 ),
+                Integer.valueOf( hexColor.substring( 3, 5 ), 16 ),
+                Integer.valueOf( hexColor.substring( 5, 7 ), 16 ));
     }
 
     @Override
@@ -130,5 +139,37 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
     @Override
     public void onLightBulbs(Bridge bridgeWithLightbulbs) {
 
+    }
+
+    @Override
+    public void onColor(int color, boolean fromUser) {
+        com.timdebooij.hueapplicatie.models.Color c = hex2Rgb(color);
+        int[] rgb = {c.hue, c.sat, c.bri};
+        hsv = new float[3];
+        Color.RGBToHSV(rgb[0], rgb[1], rgb[2], hsv);
+        huee = ((int)(hsv[0]/360*65535));
+        satt = ((int)(hsv[1]*254));
+        brii = ((int)(hsv[2]*254));
+        Log.i("infocom", "set hue to: " + huee);
+        bulb.hue = (int) huee;
+        bulb.sat = (int) satt;
+        bulb.bri = (int) brii;
+        try {
+            service.setLight(bridge, bulb.id, (int)huee, (int)satt, (int)brii);
+            setInfoText((int)huee, (int)satt, (int)brii);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        bridge.lightBulbs.set(number, bulb);
+        Log.i("infocom", "HUE value send: " + bridge.lightBulbs.get(number).hue);
+
+        BridgeDetailActivity.bridge.lightBulbs.clear();
+        BridgeDetailActivity.bridge.lightBulbs.addAll(bridge.lightBulbs);
+        BridgeDetailActivity.adapter.notifyDataSetChanged();
+        super.onPause();
     }
 }

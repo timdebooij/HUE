@@ -7,20 +7,19 @@
     android:background="@color/colorBackground"
     tools:context=".LightbulbDetailActivity">
 
-    <com.skydoves.colorpickerpreference.ColorPickerView
-        android:id="@+id/colorPickerView"
+    <top.defaults.colorpicker.ColorPickerView
+        android:id="@+id/colorPickerArsenal"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        app:enableAlpha="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lightSwitchBulb"
-        app:palette="@drawable/palette"
-        app:selector="@drawable/wheel" />
+        app:layout_constraintHorizontal_bias="0.472"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lightSwitchBulb" />
 
     <Switch
         android:id="@+id/lightSwitchBulb"

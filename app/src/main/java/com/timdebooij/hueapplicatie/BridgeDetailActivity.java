@@ -27,13 +27,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BridgeDetailActivity extends AppCompatActivity implements ApiListener {
-    public Bridge bridge;
+    public static Bridge bridge;
     public VolleyService service;
     public TextView connected;
     public int bridgeNumber;
     public RecyclerView recyclerView;
-    public RecyclerViewAdapterBulbs adapter;
-    public ArrayList<LightBulb> lightBulbs;
+    public static RecyclerViewAdapterBulbs adapter;
+    //public ArrayList<LightBulb> lightBulbs;
     public Spinner spinner;
     public ArrayAdapter<String> spinnerAdapter;
     public ArrayList<String> colorSchemeNames;
@@ -47,7 +47,7 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         Intent intent = getIntent();
         bridge = intent.getParcelableExtra("bridge");
         bridgeNumber = intent.getIntExtra("number", 0);
-        lightBulbs = bridge.lightBulbs;
+        //lightBulbs = bridge.lightBulbs;
         service = new VolleyService(this.getApplicationContext(), this);
         getBridgeInfo();
         setUpRecyclerView();
@@ -109,6 +109,9 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         com.timdebooij.hueapplicatie.models.Color color = colorSchemes.get(spinner.getSelectedItem().toString());
         for(LightBulb bulb : bridge.lightBulbs){
             try {
+                bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).hue = color.hue;
+                bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).sat = color.sat;
+                bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).bri = color.bri;
                 service.setLight(bridge, bulb.id, color.hue, color.sat, color.bri);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -121,10 +124,12 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
 
         if (switchState){
             for(LightBulb bulb : bridge.lightBulbs) {
+                bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).on = true;
                 service.switchLightOnOff(bridge, bulb.id, true);
             }
         } else if (switchState == false){
             for(LightBulb bulb : bridge.lightBulbs) {
+                bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).on = false;
                 service.switchLightOnOff(bridge, bulb.id, false);
             }
         }
@@ -158,8 +163,8 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         for(LightBulb bulb : bridgeWithLightbulbs.lightBulbs){
             Log.i("info", bulb.toString());
         }
-        lightBulbs.clear();
-        lightBulbs.addAll(bridge.lightBulbs);
+        bridge.lightBulbs.clear();
+        bridge.lightBulbs.addAll(bridgeWithLightbulbs.lightBulbs);
         adapter.notifyDataSetChanged();
         for(LightBulb bulb : bridge.lightBulbs){
             if(bulb.on){

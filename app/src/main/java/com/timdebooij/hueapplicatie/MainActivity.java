@@ -33,6 +33,7 @@ To do(for nearly a 10):
         -Multi-language support
         -Make icon for app
         -Use animations
+        -Toasts when refresh(Connect) button is pressed which shows the result
  */
 public class MainActivity extends AppCompatActivity implements ApiListener {
 

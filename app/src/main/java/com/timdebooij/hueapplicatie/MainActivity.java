@@ -20,12 +20,12 @@ import com.timdebooij.hueapplicatie.services.VolleyService;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
 /*
 To do(for nearly a 10):
-        -Create nice layout for SchemeAdder
         -Fragments for each activity!
         -Create nice look for bridgeView
         -Multi-language support!
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
             }
         }
     }
+
 
     public void logIn(){
         for(Bridge bridge : bridges){

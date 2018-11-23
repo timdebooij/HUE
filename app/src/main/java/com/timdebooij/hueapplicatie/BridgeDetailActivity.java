@@ -63,7 +63,9 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         getBridgeInfo();
         setUpRecyclerView();
         setUpSpinner();
+
         database = Room.databaseBuilder(getApplicationContext(), DatabaseColorScheme.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+
         setUpReturnThread();
     }
 
@@ -150,7 +152,13 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
 
     public void connect(View view) throws JSONException {
         Log.i("info", "trying to log in");
-        service.logIn(bridge);
+        if (bridge.token != null && bridge.token != "") {
+            service.getLightsInBridge(bridge);
+
+        } else
+            {
+            service.logIn(bridge);
+        }
     }
 
     public void setAllLights(View view){
@@ -187,6 +195,35 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
 
     }
 
+    public void fillDatabase()
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ColorScheme scheme = new ColorScheme();
+                scheme.setSchemeName("Honolulu scheme");
+                scheme.setHue(1713);
+                scheme.setBri(254);
+                scheme.setSat(254);
+                database.daoAccess().insertColorScheme(scheme);
+                ColorScheme scheme2 = new ColorScheme();
+                scheme2.setSchemeName("Wake Up scheme");
+                scheme2.setHue(8557);
+                scheme2.setBri(254);
+                scheme2.setSat(156);
+                database.daoAccess().insertColorScheme(scheme2);
+                ColorScheme scheme3 = new ColorScheme();
+                scheme3.setSchemeName("Goodnight scheme");
+                scheme3.setHue(47801);
+                scheme3.setBri(180);
+                scheme3.setSat(254);
+                database.daoAccess().insertColorScheme(scheme3);
+                spinnerAdapter.notifyDataSetChanged();
+            }
+        }).start();
+
+    }
+
     @Override
     public void onResponse(String response) {
 
@@ -199,8 +236,7 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         editor.putString(bridgeWithToken.name, bridgeWithToken.token);
         editor.apply();
         service.getLightsInBridge(bridge);
-        connected.setText("is Connected");
-        connected.setTextColor(Color.GREEN);
+
     }
 
     @Override
@@ -226,6 +262,8 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
                 lightSwitch.setChecked(true);
             }
         }
+        connected.setText("is Connected");
+        connected.setTextColor(Color.GREEN);
     }
 
     @Override

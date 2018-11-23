@@ -3,6 +3,7 @@ package com.timdebooij.hueapplicatie.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,7 +43,18 @@ public class RecyclerViewAdapterBulbs extends RecyclerView.Adapter<RecyclerViewA
     public void onBindViewHolder(@NonNull ViewHolderBulb viewHolderBulb, int i) {
         LightBulb bulb = lightBulbs.get(i);
         viewHolderBulb.id.setText(bulb.id);
-        viewHolderBulb.color.setBackgroundColor(Color.RED);
+        viewHolderBulb.name.setText(bulb.name);
+        viewHolderBulb.hsv.setText("H: " + bulb.hue + ", S: " + bulb.sat + ", V: " + bulb.bri);
+        if(bulb.on) {
+            viewHolderBulb.color.setAlpha(1f);
+            com.timdebooij.hueapplicatie.models.Color color = new com.timdebooij.hueapplicatie.models.Color(bulb.hue, bulb.sat, bulb.bri);
+            viewHolderBulb.color.setColorFilter(color.colorInt);
+            viewHolderBulb.on.setText("ON");
+        }
+        else{
+            viewHolderBulb.color.setAlpha(0f);
+            viewHolderBulb.on.setText("OFF");
+        }
         viewHolderBulb.setListener(bulb, viewHolderBulb.getLayoutPosition());
     }
 
@@ -53,12 +65,18 @@ public class RecyclerViewAdapterBulbs extends RecyclerView.Adapter<RecyclerViewA
 
     public class ViewHolderBulb extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView id;
+        TextView name;
+        TextView hsv;
+        TextView on;
         ImageView color;
         public ViewHolderBulb(View itemView, final Context context){
             super(itemView);
             //context = context;
             id = itemView.findViewById(R.id.lightbulbID);
-            color = itemView.findViewById(R.id.lightbulbColor);
+            color = itemView.findViewById(R.id.imageGlow);
+            name = itemView.findViewById(R.id.lightBulbName);
+            hsv = itemView.findViewById(R.id.lightbulbHSV);
+            on = itemView.findViewById(R.id.lightbulbOn);
         }
 
         public void setListener(final LightBulb bulb, final int i){

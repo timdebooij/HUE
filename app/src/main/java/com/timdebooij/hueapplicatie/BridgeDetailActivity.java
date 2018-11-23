@@ -1,8 +1,11 @@
 package com.timdebooij.hueapplicatie;
 
+import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,9 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.timdebooij.hueapplicatie.adapter.RecyclerViewAdapterBulbs;
 import com.timdebooij.hueapplicatie.models.Bridge;
+import com.timdebooij.hueapplicatie.models.ColorScheme;
+import com.timdebooij.hueapplicatie.database.DatabaseColorScheme;
 import com.timdebooij.hueapplicatie.models.LightBulb;
 import com.timdebooij.hueapplicatie.services.ApiListener;
 import com.timdebooij.hueapplicatie.services.VolleyService;
@@ -24,6 +30,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BridgeDetailActivity extends AppCompatActivity implements ApiListener {
@@ -33,36 +40,57 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
     public int bridgeNumber;
     public RecyclerView recyclerView;
     public static RecyclerViewAdapterBulbs adapter;
-    //public ArrayList<LightBulb> lightBulbs;
+    public static ArrayList<LightBulb> lightBulbsAdapterSet;
     public Spinner spinner;
-    public ArrayAdapter<String> spinnerAdapter;
-    public ArrayList<String> colorSchemeNames;
-    public Map<String, com.timdebooij.hueapplicatie.models.Color> colorSchemes;
+    public static ArrayAdapter<String> spinnerAdapter;
+    public static ArrayList<String> colorSchemeNames;
+    public static Map<String, ColorScheme> colorSchemes;
     public Switch lightSwitch;
+    private static final String DATABASE_NAME = "ColorSchemes_db";
+    private DatabaseColorScheme database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bridge_detail);
         Intent intent = getIntent();
+        lightBulbsAdapterSet = new ArrayList<>();
+        colorSchemeNames = new ArrayList<>();
+        colorSchemes = new HashMap<>();
         bridge = intent.getParcelableExtra("bridge");
         bridgeNumber = intent.getIntExtra("number", 0);
-        //lightBulbs = bridge.lightBulbs;
         service = new VolleyService(this.getApplicationContext(), this);
         getBridgeInfo();
         setUpRecyclerView();
         setUpSpinner();
+        database = Room.databaseBuilder(getApplicationContext(), DatabaseColorScheme.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+        setUpReturnThread();
     }
 
+    public void addNewScheme(View view) {
+        Intent intent = new Intent(this, SchemeAdder.class);
+        startActivity(intent);
+    }
+
+    public void setUpReturnThread(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<ColorScheme> schemes = new ArrayList<>();
+                schemes = database.daoAccess().getAllSchemes();
+                Log.i("infodata", "database size: " + schemes.size());
+                for(ColorScheme scheme : schemes){
+                    colorSchemes.put(scheme.getSchemeName(), scheme);
+                    colorSchemeNames.add(scheme.getSchemeName());
+                }
+                spinnerAdapter.notifyDataSetChanged();
+            }
+        }) .start();
+
+    }
+
+
     public void setUpSpinner(){
-        colorSchemeNames = new ArrayList<>();
-        colorSchemeNames.add("Honolunu scheme");
-        colorSchemeNames.add("Wake Up scheme");
-        colorSchemeNames.add("Good Night scheme");
-        colorSchemes = new HashMap<String, com.timdebooij.hueapplicatie.models.Color>();
-        colorSchemes.put("Honolunu scheme", new com.timdebooij.hueapplicatie.models.Color(1713,254,254));
-        colorSchemes.put("Wake Up scheme", new com.timdebooij.hueapplicatie.models.Color(8557, 156, 254));
-        colorSchemes.put("Good Night scheme", new com.timdebooij.hueapplicatie.models.Color(47801,254,180));
         spinner = findViewById(R.id.colorSchemeSpinner);
         spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, colorSchemeNames);
         spinner.setAdapter(spinnerAdapter);
@@ -72,14 +100,14 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         recyclerView = findViewById(R.id.recyclerViewBulbs);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewAdapterBulbs(this, bridge.lightBulbs, bridge);
+        adapter = new RecyclerViewAdapterBulbs(this, lightBulbsAdapterSet, bridge);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
     public void getBridgeInfo(){
         TextView name = findViewById(R.id.bridgeName);
-        name.setText("Bridge name: " + bridge.name);
+        name.setText(bridge.name);
         TextView ip = findViewById(R.id.bridgeIP);
         ip.setText("IP address: " + bridge.ipAddress);
         connected = findViewById(R.id.bridgeConnected);
@@ -98,6 +126,26 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
                 lightSwitch.setChecked(true);
             }
         }
+        lightBulbsAdapterSet.clear();
+        lightBulbsAdapterSet.addAll(bridge.lightBulbs);
+    }
+
+    public void deleteScheme(View view){
+        final ColorScheme color = colorSchemes.get(spinner.getSelectedItem().toString());
+        if(colorSchemeNames.indexOf(color.getSchemeName())>2){
+            colorSchemeNames.remove(color.getSchemeName());
+            colorSchemes.remove(color.getSchemeName());
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    database.daoAccess().deleteColorScheme(color);
+                }
+            }) .start();
+            spinnerAdapter.notifyDataSetChanged();
+        }
+        else{
+            Toast.makeText(this, "Can't delete standard schemes", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void connect(View view) throws JSONException {
@@ -106,17 +154,18 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
     }
 
     public void setAllLights(View view){
-        com.timdebooij.hueapplicatie.models.Color color = colorSchemes.get(spinner.getSelectedItem().toString());
-        for(LightBulb bulb : bridge.lightBulbs){
+        ColorScheme color = colorSchemes.get(spinner.getSelectedItem().toString());
+        for(LightBulb bulb : lightBulbsAdapterSet){
             try {
-                bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).hue = color.hue;
-                bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).sat = color.sat;
-                bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).bri = color.bri;
-                service.setLight(bridge, bulb.id, color.hue, color.sat, color.bri);
+                lightBulbsAdapterSet.get(bridge.lightBulbs.indexOf(bulb)).hue = color.getHue();
+                lightBulbsAdapterSet.get(bridge.lightBulbs.indexOf(bulb)).sat = color.getSat();
+                lightBulbsAdapterSet.get(bridge.lightBulbs.indexOf(bulb)).bri = color.getBri();
+                service.setLight(bridge, bulb.id, color.getHue(), color.getSat(), color.getBri());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        adapter.notifyDataSetChanged();
     }
 
     public void setLightbulbOnOff(View view) throws JSONException {
@@ -126,11 +175,13 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
             for(LightBulb bulb : bridge.lightBulbs) {
                 bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).on = true;
                 service.switchLightOnOff(bridge, bulb.id, true);
+                adapter.notifyDataSetChanged();
             }
         } else if (switchState == false){
             for(LightBulb bulb : bridge.lightBulbs) {
                 bridge.lightBulbs.get(bridge.lightBulbs.indexOf(bulb)).on = false;
                 service.switchLightOnOff(bridge, bulb.id, false);
+                adapter.notifyDataSetChanged();
             }
         }
 
@@ -159,18 +210,27 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
 
     @Override
     public void onLightBulbs(Bridge bridgeWithLightbulbs) {
-        Log.i("info", "amount of bulbs: " +  bridgeWithLightbulbs.lightBulbs.size());
+        Log.i("info", "amount of bulbs received: " +  bridgeWithLightbulbs.lightBulbs.size());
         for(LightBulb bulb : bridgeWithLightbulbs.lightBulbs){
             Log.i("info", bulb.toString());
         }
-        bridge.lightBulbs.clear();
-        bridge.lightBulbs.addAll(bridgeWithLightbulbs.lightBulbs);
+        //bridge.lightBulbs.clear();
+        //bridge.lightBulbs.addAll(bridgeWithLightbulbs.lightBulbs);
+        Log.i("info", "amount of bulbs in bridge: " +  bridge.lightBulbs.size());
+        lightBulbsAdapterSet.clear();
+        lightBulbsAdapterSet.addAll(bridge.lightBulbs);
         adapter.notifyDataSetChanged();
         for(LightBulb bulb : bridge.lightBulbs){
+            Log.i("info", "Reached");
             if(bulb.on){
                 lightSwitch.setChecked(true);
             }
         }
+    }
+
+    @Override
+    public void onNewScheme(ColorScheme scheme) {
+
     }
 
     @Override

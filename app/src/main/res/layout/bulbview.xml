@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="150dp">
+    android:layout_height="132dp">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
@@ -29,24 +29,82 @@
                 android:id="@+id/lightbulbColor"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:color/holo_blue_dark" />
+                app:srcCompat="@drawable/lampcut3" />
+
+            <ImageView
+                android:id="@+id/imageLampTop"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageGlow"
+                app:layout_constraintEnd_toEndOf="@+id/imageGlow"
+                app:layout_constraintStart_toStartOf="@+id/imageGlow"
+                app:layout_constraintTop_toTopOf="@+id/imageGlow"
+                app:srcCompat="@drawable/lamptop" />
+
+            <ImageView
+                android:id="@+id/imageGlow"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/lightbulbColor"
+                app:layout_constraintEnd_toEndOf="@+id/lightbulbColor"
+                app:layout_constraintStart_toStartOf="@+id/lightbulbColor"
+                app:layout_constraintTop_toTopOf="@+id/lightbulbColor"
+                app:srcCompat="@drawable/glow" />
 
             <TextView
                 android:id="@+id/lightbulbID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
                 android:text="id"
                 android:textColor="@color/colorText"
-                app:layout_constraintStart_toEndOf="@+id/lightbulbColor"
-                app:layout_constraintTop_toTopOf="@+id/lightbulbColor" />
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/lightBulbName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="name"
+                android:textColor="@color/colorText"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/imageLampTop"
+                app:layout_constraintTop_toTopOf="@+id/imageLampTop" />
+
+            <TextView
+                android:id="@+id/lightbulbHSV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="HSV"
+                android:textColor="@color/colorText"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/imageLampTop"
+                app:layout_constraintTop_toBottomOf="@+id/lightBulbName" />
+
+            <TextView
+                android:id="@+id/lightbulbOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="ON"
+                android:textColor="@color/colorText"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/imageLampTop"
+                app:layout_constraintTop_toBottomOf="@+id/lightbulbHSV" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>

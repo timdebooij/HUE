@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".BridgeDetailActivity" />
-        <activity android:name=".LightbulbDetailActivity"></activity>
+        <activity android:name=".LightbulbDetailActivity" />
+        <activity android:name=".SchemeAdder"></activity>
     </application>
 
 </manifest>

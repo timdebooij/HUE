@@ -15,6 +15,7 @@ import com.skydoves.colorpickerview.ColorPickerView;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.skydoves.colorpickerview.listeners.ColorListener;
 import com.timdebooij.hueapplicatie.models.Bridge;
+import com.timdebooij.hueapplicatie.models.ColorScheme;
 import com.timdebooij.hueapplicatie.models.LightBulb;
 import com.timdebooij.hueapplicatie.services.ApiListener;
 import com.timdebooij.hueapplicatie.services.VolleyService;
@@ -51,7 +52,7 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
         Intent intent = getIntent();
         number = intent.getIntExtra("number", 0);
         bulb = intent.getParcelableExtra("bulb");
-        Log.i("infocolor", "hue: " + bulb.hue);
+        Log.i("infocom", "hue: " + bulb.hue);
         initializeBulb();
         bridge = intent.getParcelableExtra("bridge");
         colorPicker = findViewById(R.id.colorPickerArsenal);
@@ -142,14 +143,28 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
     }
 
     @Override
+    public void onNewScheme(ColorScheme scheme) {
+
+    }
+
+    @Override
     public void onColor(int color, boolean fromUser) {
+        Log.i("infocom", "color got: " + color);
         com.timdebooij.hueapplicatie.models.Color c = hex2Rgb(color);
+        //Log.i("infocom", "set r: " + c.hue);
+        //Log.i("infocom", "set g to: " + c.sat);
+        //Log.i("infocom", "set b to: " + c.bri);
         int[] rgb = {c.hue, c.sat, c.bri};
         hsv = new float[3];
         Color.RGBToHSV(rgb[0], rgb[1], rgb[2], hsv);
+
+        Log.i("infocom", "set hue bef calc: " + hsv[0]);
         huee = ((int)(hsv[0]/360*65535));
         satt = ((int)(hsv[1]*254));
         brii = ((int)(hsv[2]*254));
+//        if(huee >= 32767){
+//            huee = huee + 43;
+//        }
         Log.i("infocom", "set hue to: " + huee);
         bulb.hue = (int) huee;
         bulb.sat = (int) satt;
@@ -169,6 +184,8 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
 
         BridgeDetailActivity.bridge.lightBulbs.clear();
         BridgeDetailActivity.bridge.lightBulbs.addAll(bridge.lightBulbs);
+        BridgeDetailActivity.lightBulbsAdapterSet.clear();
+        BridgeDetailActivity.lightBulbsAdapterSet.addAll(bridge.lightBulbs);
         BridgeDetailActivity.adapter.notifyDataSetChanged();
         super.onPause();
     }

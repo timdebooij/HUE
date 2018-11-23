@@ -12,6 +12,7 @@ import android.widget.Switch;
 
 import com.timdebooij.hueapplicatie.adapter.RecyclerViewAdapter;
 import com.timdebooij.hueapplicatie.models.Bridge;
+import com.timdebooij.hueapplicatie.models.ColorScheme;
 import com.timdebooij.hueapplicatie.models.LightBulb;
 import com.timdebooij.hueapplicatie.services.ApiListener;
 import com.timdebooij.hueapplicatie.services.VolleyService;
@@ -24,16 +25,18 @@ import java.util.Map;
 
 /*
 To do(for nearly a 10):
-        -Save colorschemes in a room database
-        -Possibility to add a new colorscheme
-        -Create nice image to show the color for each lightbulb in the list
-        -Fragments for each activity
+        -Create nice layout for SchemeAdder
+        -Fragments for each activity!
         -Create nice look for bridgeView
-        -Create nice look for bulbView
-        -Multi-language support
-        -Make icon for app
-        -Use animations
+        -Multi-language support!
+        -Make icon for app!
+        -Use animations!
+        -Update way to convert colors to be more precise
+
+        Could Haves:
         -Toasts when refresh(Connect) button is pressed which shows the result
+        -Update refresh button to first check if new lights can be retrieved
+        -Add switch to lightbulbadapter
  */
 public class MainActivity extends AppCompatActivity implements ApiListener {
 
@@ -121,6 +124,11 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
         for(LightBulb bulb : bridgeWithLightbulbs.lightBulbs){
             Log.i("info", bulb.toString());
         }
+    }
+
+    @Override
+    public void onNewScheme(ColorScheme scheme) {
+
     }
 
     @Override

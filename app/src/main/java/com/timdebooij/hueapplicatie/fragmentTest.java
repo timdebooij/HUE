@@ -158,8 +158,8 @@ public class fragmentTest extends AppCompatActivity implements ApiListener {
 
             TextView name = view.findViewById(R.id.bridgeName);
             name.setText(act.bridge.name);
-            TextView ip = view.findViewById(R.id.bridgeIP);
-            ip.setText(this.getString(R.string.ipAddressBridgeDetail) + act.bridge.ipAddress);
+            //TextView ip = view.findViewById(R.id.bridgeIP);
+            //ip.setText(this.getString(R.string.ipAddressBridgeDetail) + act.bridge.ipAddress);
             connected = view.findViewById(R.id.bridgeConnected);
             if(act.bridge.lightBulbs.size() != 0){
                 connected.setText(R.string.connectBridgeDetail);
@@ -196,7 +196,7 @@ public class fragmentTest extends AppCompatActivity implements ApiListener {
                 }
             });
 
-            Button add = view.findViewById(R.id.button2);
+            Button add = view.findViewById(R.id.AddColorSchemeButton);
             add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -205,7 +205,7 @@ public class fragmentTest extends AppCompatActivity implements ApiListener {
                 }
             });
 
-            Button delete= view.findViewById(R.id.button3);
+            Button delete= view.findViewById(R.id.DeleteColorSchemeButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

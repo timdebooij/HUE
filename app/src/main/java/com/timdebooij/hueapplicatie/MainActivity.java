@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
 
     public void setUpBridges(){
 
-            bridges.add(new Bridge("192.168.178.18", "emulator", "80"));
+            bridges.add(new Bridge("192.168.2.25", "emulator", "80"));
             bridges.add(new Bridge("145.48.205.33", "LA AULA", "80"));
             bridges.add(new Bridge("192.168.1.179", "MAD LA-134", "80"));
             getPreferences();

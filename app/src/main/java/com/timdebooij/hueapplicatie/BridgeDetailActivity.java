@@ -113,8 +113,8 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
     public void getBridgeInfo(){
         TextView name = findViewById(R.id.bridgeName);
         name.setText(bridge.name);
-        TextView ip = findViewById(R.id.bridgeIP);
-        ip.setText(this.getString(R.string.ipAddressBridgeDetail) + bridge.ipAddress);
+        //TextView ip = findViewById(R.id.bridgeIP);
+        //ip.setText(this.getString(R.string.ipAddressBridgeDetail) + bridge.ipAddress);
         connected = findViewById(R.id.bridgeConnected);
         Log.i("info", "amount of bulbs: " + bridge.lightBulbs.size());
         if(bridge.lightBulbs.size() != 0){

@@ -57,6 +57,33 @@
         app:layout_constraintTop_toTopOf="@+id/SetAllLightTextView" />
 
     <Button
+        android:id="@+id/AddColorSchemeButton"
+        android:layout_width="53dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/addbutton"
+        android:onClick="addNewScheme"
+        android:textColor="@color/colorText"
+        app:layout_constraintEnd_toStartOf="@+id/DeleteColorSchemeButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/DeleteColorSchemeButton"
+        android:layout_width="128dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="44dp"
+        android:layout_weight="1"
+        android:background="@drawable/reddeletebutton"
+        android:onClick="deleteScheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/bridgeConnectDetailButton"
         android:layout_width="wrap_content"
         android:layout_height="34dp"
@@ -73,30 +100,16 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <TextView
-        android:id="@+id/bridgeIP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:text="IP"
-        android:textColor="@color/colorText"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bridgeConnectDetailButton" />
-
-    <TextView
         android:id="@+id/SetAllLightTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/setLightsBridgeDeatil"
         android:textColor="@color/colorText"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/bridgeConnectDetailButton" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -110,12 +123,13 @@
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="132dp"
         android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bridgeIP">
+        app:layout_constraintTop_toTopOf="@+id/linearLayout">
 
         <Button
             android:id="@+id/ChooseColorSchemeButto"
@@ -140,26 +154,6 @@
             app:layout_constraintStart_toEndOf="@+id/buttonChoose"
             app:layout_constraintTop_toTopOf="@+id/buttonChoose" />
 
-        <Button
-            android:id="@+id/AddColorSchemeButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/addbutton"
-            android:onClick="addNewScheme"
-            android:textColor="@color/colorText"
-            tools:layout_editor_absoluteX="224dp"
-            tools:layout_editor_absoluteY="263dp" />
-
-        <Button
-            android:id="@+id/DeleteColorSchemeButton"
-            android:layout_width="50dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/reddeletebutton"
-            android:onClick="deleteScheme"
-            tools:layout_editor_absoluteX="296dp"
-            tools:layout_editor_absoluteY="284dp" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

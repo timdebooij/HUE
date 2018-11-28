@@ -49,11 +49,11 @@ public class RecyclerViewAdapterBulbs extends RecyclerView.Adapter<RecyclerViewA
             viewHolderBulb.color.setAlpha(1f);
             com.timdebooij.hueapplicatie.models.Color color = new com.timdebooij.hueapplicatie.models.Color(bulb.hue, bulb.sat, bulb.bri);
             viewHolderBulb.color.setColorFilter(color.colorInt);
-            viewHolderBulb.on.setText("ON");
+            viewHolderBulb.on.setText(R.string.aanLampView);
         }
         else{
             viewHolderBulb.color.setAlpha(0f);
-            viewHolderBulb.on.setText("OFF");
+            viewHolderBulb.on.setText(R.string.uitLampView);
         }
         viewHolderBulb.setListener(bulb, viewHolderBulb.getLayoutPosition());
     }

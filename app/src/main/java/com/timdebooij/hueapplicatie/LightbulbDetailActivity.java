@@ -87,10 +87,10 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
         lightSwitch = (Switch) findViewById(R.id.lightSwitchBulb);
 
         if(bulb.on){
-            on.setText("ON");
+            on.setText(R.string.aanLampView);
         }
         else{
-            on.setText("OFF");
+            on.setText(R.string.uitLampView);
         }
         name.setText(bulb.name);
         hue.setText("HUE: " + bulb.hue);
@@ -104,11 +104,11 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
 
         if (switchState){
             service.switchLightOnOff(bridge,bulb.id,true);
-            on.setText("ON");
+            on.setText(R.string.aanLampView);
             bulb.on = true;
         } else if (switchState == false){
             service.switchLightOnOff(bridge,bulb.id,false);
-            on.setText("OFF");
+            on.setText(R.string.uitLampView);
             bulb.on = false;
         }
     }
@@ -151,9 +151,6 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
     public void onColor(int color, boolean fromUser) {
         Log.i("infocom", "color got: " + color);
         com.timdebooij.hueapplicatie.models.Color c = hex2Rgb(color);
-        //Log.i("infocom", "set r: " + c.hue);
-        //Log.i("infocom", "set g to: " + c.sat);
-        //Log.i("infocom", "set b to: " + c.bri);
         int[] rgb = {c.hue, c.sat, c.bri};
         hsv = new float[3];
         Color.RGBToHSV(rgb[0], rgb[1], rgb[2], hsv);
@@ -182,11 +179,11 @@ public class LightbulbDetailActivity extends AppCompatActivity implements ApiLis
         bridge.lightBulbs.set(number, bulb);
         Log.i("infocom", "HUE value send: " + bridge.lightBulbs.get(number).hue);
 
-        BridgeDetailActivity.bridge.lightBulbs.clear();
-        BridgeDetailActivity.bridge.lightBulbs.addAll(bridge.lightBulbs);
-        BridgeDetailActivity.lightBulbsAdapterSet.clear();
-        BridgeDetailActivity.lightBulbsAdapterSet.addAll(bridge.lightBulbs);
-        BridgeDetailActivity.adapter.notifyDataSetChanged();
+        fragmentTest.lightBulbsAdapterSet.clear();
+        fragmentTest.lightBulbsAdapterSet.addAll(bridge.lightBulbs);
+        fragmentTest.bridge.lightBulbs.clear();
+        fragmentTest.bridge.lightBulbs.addAll(bridge.lightBulbs);
+        fragmentTest.adapter.notifyDataSetChanged();
         super.onPause();
     }
 }

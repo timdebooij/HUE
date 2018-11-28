@@ -12,6 +12,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -84,6 +86,7 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
                 for(ColorScheme scheme : schemes){
                     colorSchemes.put(scheme.getSchemeName(), scheme);
                     colorSchemeNames.add(scheme.getSchemeName());
+                    Log.i("infodata", "name: " + scheme.getSchemeName()+ " hue: " + scheme.getHue() + " sat: " + scheme.getSat() + " bri: " + scheme.getBri());
                 }
                 spinnerAdapter.notifyDataSetChanged();
             }
@@ -111,15 +114,15 @@ public class BridgeDetailActivity extends AppCompatActivity implements ApiListen
         TextView name = findViewById(R.id.bridgeName);
         name.setText(bridge.name);
         TextView ip = findViewById(R.id.bridgeIP);
-        ip.setText("IP address: " + bridge.ipAddress);
+        ip.setText(this.getString(R.string.ipAddressBridgeDetail) + bridge.ipAddress);
         connected = findViewById(R.id.bridgeConnected);
         Log.i("info", "amount of bulbs: " + bridge.lightBulbs.size());
         if(bridge.lightBulbs.size() != 0){
-            connected.setText("is Connected");
+            connected.setText(R.string.connectBridgeDetail);
             connected.setTextColor(Color.GREEN);
         }
         else{
-            connected.setText("is not connected");
+            connected.setText(R.string.notConnectedBridgeDetail);
             connected.setTextColor(Color.RED);
         }
         lightSwitch = (Switch) findViewById(R.id.LightSwitchAllOn);

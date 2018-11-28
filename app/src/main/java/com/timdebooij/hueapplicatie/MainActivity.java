@@ -26,17 +26,20 @@ import java.util.Map;
 
 /*
 To do(for nearly a 10):
-        -Fragments for each activity!
-        -Create nice look for bridgeView
-        -Multi-language support!
-        -Make icon for app!
+        -Fragments for lamp detail
         -Use animations!
-        -Update way to convert colors to be more precise
+        -Configuration change lamp detail
+        -Configutation change save list progres
+        -disco mode
+        -group lamps
 
         Could Haves:
+        -Make own icon in gimp
         -Toasts when refresh(Connect) button is pressed which shows the result
         -Update refresh button to first check if new lights can be retrieved
         -Add switch to lightbulbadapter
+        -Update way to convert colors to be more precise
+        -Better add and delete button
  */
 public class MainActivity extends AppCompatActivity implements ApiListener {
 
@@ -125,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements ApiListener {
         for(LightBulb bulb : bridgeWithLightbulbs.lightBulbs){
             Log.i("info", bulb.toString());
         }
+        adapter.notifyDataSetChanged();
     }
 
     @Override

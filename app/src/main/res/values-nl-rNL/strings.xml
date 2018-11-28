@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HUEapplicatie</string>
+    <string name="amountLightsMain">"Aantal lampen: "</string>
+    <string name="portMain">"Poort "</string>
+    <string name="connectBridgeDetail">is verbonden</string>
+    <string name="ipAddressBridgeDetail">"IP adres: "</string>
+    <string name="turnOnBridgeDetail">Kies</string>
+    <string name="setLightsBridgeDeatil">Zet alle lichten</string>
+    <string name="notConnectedBridgeDetail">is niet verbonden</string>
+    <string name="aanLampView">AAN</string>
+    <string name="uitLampView">UIT</string>
+    <string name="newSchemeView">Nieuw kleurenschema</string>
+    <string name="nameSchemeView">"Naam: "</string>
+    <string name="addButtonSchemeView">VOEG SCHEMA TOE</string>
+    <string name="refreshBridgeDetail">Verversen</string>
+</resources>

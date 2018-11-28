@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">HUEapplicatie</string>
+    <string name="amountLightsMain">Amount of lights: </string>
+    <string name="portMain">"Port "</string>
+
+    <string name="connectBridgeDetail">is connected</string>
+    <string name="notConnectedBridgeDetail">is not connected</string>
+    <string name="ipAddressBridgeDetail">IP address: </string>
+    <string name="turnOnBridgeDetail">Choose</string>
+    <string name="setLightsBridgeDeatil">Set all lights</string>
+    <string name="refreshBridgeDetail">REFRESH</string>
+
+    <string name="aanLampView">ON</string>
+    <string name="uitLampView">OFF</string>
+
+    <string name="newSchemeView">New colorscheme</string>
+    <string name="nameSchemeView">Name: </string>
+    <string name="addButtonSchemeView">ADD SCHEME</string>
 </resources>

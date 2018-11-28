@@ -8,7 +8,7 @@
     tools:context=".fragmentTest">
 
     <fragment
-        android:id="@+id/fragmentbda"
+        android:id="@+id/MasterLightBulbFragment"
         android:name="com.timdebooij.hueapplicatie.fragmentTest$testFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         tools:layout="@layout/activity_bridge_detail" />
 
     <fragment
-        android:id="@+id/fragment2"
+        android:id="@+id/MasterDetailFragment"
         android:name="com.timdebooij.hueapplicatie.fragmentTest$fragmentBridgeAdapter"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragmentbda"
+        app:layout_constraintTop_toBottomOf="@+id/MasterLightBulbFragment"
         tools:layout="@layout/bridge_adapter" />
 
 </android.support.constraint.ConstraintLayout>
